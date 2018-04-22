@@ -1,4 +1,4 @@
-FROM jenkins/jenkins:2.89.4
+FROM jenkins/jenkins:2.107.2
 # if we want to install via apt
 USER root
 RUN apt-get update && apt-get install -y git curl sudo python-pip libltdl7 && rm -rf /var/lib/apt/lists/* \
