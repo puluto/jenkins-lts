@@ -1,8 +1,14 @@
-FROM jenkins/jenkins:2.107.2
+FROM hub.ihr.local/jenkinsci/jenkins:2.107.3
 # if we want to install via apt
 USER root
-RUN apt-get update && apt-get install -y git curl sudo python-pip libltdl7 && rm -rf /var/lib/apt/lists/* \
-    && pip install docker-compose \
-    && echo "jenkins ALL=NOPASSWD: /usr/bin/apt-get /usr/local/bin/docker-compose,/usr/bin/docker" >> /etc/sudoers
+COPY docker_gpg /tmp/docker_gpg
+RUN apt update && apt install -y git curl software-properties-common apt-transport-https && \
+    cat /tmp/docker_gpg | apt-key add - && rm -f /tmp/docker_gpg && \
+    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" && \
+    apt update && apt install docker-ce=17.06.2~ce-0~debian docker-compose -y && \
+    chmod 4755 `whereis docker-compose` && chmod 4755 `whereis docker` && \
+    echo "jenkins ALL=NOPASSWD: `whereis docker-compose`,`whereis docker`" >> /etc/sudoers && \
+    apt clean autoclean && apt autoremove --yes && rm -rf /var/lib/{apt,dpkg,cache,log}/
+
 # drop back to the regular jenkins user - good practice
 USER jenkins
