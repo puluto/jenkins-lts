@@ -1,4 +1,4 @@
-FROM jenkinsci/jenkins:2.107.3
+FROM jenkinsci/jenkins:2.121.2
 # if we want to install via apt
 USER root
 COPY docker_gpg /tmp/docker_gpg
